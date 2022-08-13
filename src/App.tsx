@@ -2,8 +2,9 @@ import { NotFound, RequireAuth } from 'components/common';
 import { AdminLayout } from 'components/layout';
 import LoginPage from 'features/auth/pages/Login';
 import { DashboardFeature } from 'features/dashboard';
-import { StudentsFeature } from 'features/students';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { AddEditPage } from 'features/students/pages/AddEdit';
+import { ListPage } from 'features/students/pages/List';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import './app.scss';
 
 function App() {
@@ -21,7 +22,12 @@ function App() {
         >
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<DashboardFeature />} />
-          <Route path="students" element={<StudentsFeature />} />
+
+          <Route path="students" element={<Outlet />}>
+            <Route index element={<ListPage />} />
+            <Route path="add" element={<AddEditPage />} />
+            <Route path="edit/:studentId" element={<AddEditPage />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound />} />

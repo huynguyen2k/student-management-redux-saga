@@ -1,16 +1,21 @@
-import { Box, Grid, LinearProgress } from '@mui/material';
+import { Box, Grid, LinearProgress, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { useEffect } from 'react';
 import { StatisticItem } from './components/StatisticItem';
 import {
   dashboardActions,
+  selectDashboardHighestStudentList,
   selectDashboardLoading,
+  selectDashboardLowestStudentList,
+  selectDashboardRankingByCityList,
   selectDashboardStatistics,
 } from './dashboardSlice';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import LowMarkIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import HighMarkIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { Widget } from './components/Widget';
+import { StudentRankingList } from './components/StudentRankingList';
 
 export interface DashboardFeatureProps {}
 
@@ -19,6 +24,9 @@ export function DashboardFeature(props: DashboardFeatureProps) {
 
   const loading = useAppSelector(selectDashboardLoading);
   const statistics = useAppSelector(selectDashboardStatistics);
+  const lowestStudentList = useAppSelector(selectDashboardLowestStudentList);
+  const highestStudentList = useAppSelector(selectDashboardHighestStudentList);
+  const rankingByCityList = useAppSelector(selectDashboardRankingByCityList);
 
   useEffect(() => {
     dispatch(dashboardActions.fetchData());
@@ -58,6 +66,42 @@ export function DashboardFeature(props: DashboardFeatureProps) {
           />
         </Grid>
       </Grid>
+
+      <Box sx={{ marginTop: '32px' }}>
+        <Typography variant="h5" sx={{ marginBottom: '8px' }}>
+          All students
+        </Typography>
+
+        <Grid container spacing="16px">
+          <Grid item xs={3}>
+            <Widget title="Students with low mark">
+              <StudentRankingList studentList={lowestStudentList} />
+            </Widget>
+          </Grid>
+
+          <Grid item xs={3}>
+            <Widget title="Students with high mark">
+              <StudentRankingList studentList={highestStudentList} />
+            </Widget>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box sx={{ marginTop: '32px' }}>
+        <Typography variant="h5" sx={{ marginBottom: '8px' }}>
+          Ranking by city
+        </Typography>
+
+        <Grid container spacing="16px">
+          {rankingByCityList.map(ranking => (
+            <Grid key={ranking.cityId} item xs={3}>
+              <Widget title={ranking.cityName}>
+                <StudentRankingList studentList={ranking.rankingList} />
+              </Widget>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Box>
   );
 }

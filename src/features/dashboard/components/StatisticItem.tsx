@@ -10,7 +10,7 @@ export interface StatisticItemProps {
 export function StatisticItem({ icon, label, value }: StatisticItemProps) {
   return (
     <Paper
-      elevation={4}
+      elevation={1}
       sx={{
         padding: '16px',
         display: 'flex',
