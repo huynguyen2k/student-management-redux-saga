@@ -1,7 +1,9 @@
 import { Box, Button, LinearProgress, Pagination, Stack, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectCityMap } from 'features/city/citySlice';
+import { selectCityList, selectCityMap } from 'features/city/citySlice';
+import { ListParams, Student } from 'models';
 import { useEffect } from 'react';
+import StudentFilters from '../components/StudentFilters';
 import { StudentTable } from '../components/StudentTable';
 import {
   selectStudentsFilter,
@@ -20,7 +22,9 @@ export function ListPage(props: ListPageProps) {
   const studentList = useAppSelector(selectStudentsList);
   const filter = useAppSelector(selectStudentsFilter);
   const pagination = useAppSelector(selectStudentsPagination);
+
   const cityMap = useAppSelector(selectCityMap);
+  const cityList = useAppSelector(selectCityList);
 
   useEffect(() => {
     dispatch(studentsActions.fetchStudentList(filter));
@@ -35,6 +39,18 @@ export function ListPage(props: ListPageProps) {
     );
   };
 
+  const handleSearchChange = (newFilter: ListParams) => {
+    dispatch(studentsActions.setFilterWithDebounce(newFilter));
+  };
+
+  const handleFilterChange = (newFilter: ListParams) => {
+    dispatch(studentsActions.setFilter(newFilter));
+  };
+
+  const handleStudentDelete = (id: Student['id']) => {
+    dispatch(studentsActions.deleteStudent(id));
+  };
+
   return (
     <Box sx={{ position: 'relative' }}>
       {loading && <LinearProgress sx={{ position: 'absolute', top: '-10px', left: 0, right: 0 }} />}
@@ -46,7 +62,16 @@ export function ListPage(props: ListPageProps) {
         </Button>
       </Stack>
 
-      <StudentTable cityMap={cityMap} studentList={studentList} />
+      <Box sx={{ marginBottom: '16px' }}>
+        <StudentFilters
+          filter={filter}
+          cityList={cityList}
+          onChange={handleFilterChange}
+          onSearchChange={handleSearchChange}
+        />
+      </Box>
+
+      <StudentTable cityMap={cityMap} studentList={studentList} onDelete={handleStudentDelete} />
 
       <Box
         sx={{

@@ -1,8 +1,8 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import studentApi from 'api/studentApi';
 import { ListParams, ListResponse, Student } from 'models';
-import { call, put, takeLatest } from 'redux-saga/effects';
-import { studentsActions } from './studentsSlice';
+import { call, debounce, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
+import { selectStudentsFilter, studentsActions } from './studentsSlice';
 
 function* fetchStudentList(action: PayloadAction<ListParams>) {
   try {
@@ -14,6 +14,25 @@ function* fetchStudentList(action: PayloadAction<ListParams>) {
   }
 }
 
+function* handleSearchDebounce(action: PayloadAction<ListParams>) {
+  yield put(studentsActions.setFilter(action.payload));
+}
+
+function* deleteStudent(action: PayloadAction<Student['id']>) {
+  try {
+    yield call(studentApi.delete, action.payload as string);
+
+    const filter: ReturnType<typeof selectStudentsFilter> = yield select(selectStudentsFilter);
+    yield put(studentsActions.setFilter({ ...filter }));
+  } catch (error) {
+    console.log('Failed to delete student: ', error);
+  }
+}
+
 export function* studentsSaga() {
   yield takeLatest(studentsActions.fetchStudentList.toString(), fetchStudentList);
+
+  yield takeEvery(studentsActions.deleteStudent.toString(), deleteStudent);
+
+  yield debounce(500, studentsActions.setFilterWithDebounce.toString(), handleSearchDebounce);
 }
