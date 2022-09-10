@@ -1,5 +1,5 @@
-import { NotFound, RequireAuth } from 'components/common';
-import { AdminLayout } from 'components/layout';
+import { NotFound, RequireAuth } from 'components/Common';
+import { AdminLayout } from 'components/Layout';
 import LoginPage from 'features/auth/pages/Login';
 import { DashboardFeature } from 'features/dashboard';
 import { AddEditPage } from 'features/students/pages/AddEdit';

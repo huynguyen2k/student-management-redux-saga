@@ -12,11 +12,13 @@ import {
   selectStudentsPagination,
   studentsActions,
 } from '../studentsSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 export interface ListPageProps {}
 
 export function ListPage(props: ListPageProps) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const loading = useAppSelector(selectStudentsLoading);
   const studentList = useAppSelector(selectStudentsList);
@@ -47,6 +49,10 @@ export function ListPage(props: ListPageProps) {
     dispatch(studentsActions.setFilter(newFilter));
   };
 
+  const handleStudentEdit = (student: Student) => {
+    navigate(`/admin/students/edit/${student.id ?? ''}`);
+  };
+
   const handleStudentDelete = (id: Student['id']) => {
     dispatch(studentsActions.deleteStudent(id));
   };
@@ -57,9 +63,11 @@ export function ListPage(props: ListPageProps) {
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" marginBottom="16px">
         <Typography variant="h5">Students</Typography>
-        <Button color="success" variant="contained">
-          Add student
-        </Button>
+        <Link to="/admin/students/add">
+          <Button color="success" variant="contained">
+            Add student
+          </Button>
+        </Link>
       </Stack>
 
       <Box sx={{ marginBottom: '16px' }}>
@@ -71,7 +79,12 @@ export function ListPage(props: ListPageProps) {
         />
       </Box>
 
-      <StudentTable cityMap={cityMap} studentList={studentList} onDelete={handleStudentDelete} />
+      <StudentTable
+        cityMap={cityMap}
+        studentList={studentList}
+        onEdit={handleStudentEdit}
+        onDelete={handleStudentDelete}
+      />
 
       <Box
         sx={{

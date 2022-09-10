@@ -119,7 +119,7 @@ export function StudentTable(props: StudentTableProps) {
         <DialogContent>
           <DialogContentText>
             Are you sure to delete this student? <br />
-            This action can not undo.
+            This action can not recover.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

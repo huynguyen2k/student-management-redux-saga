@@ -1,6 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import studentApi from 'api/studentApi';
 import { ListParams, ListResponse, Student } from 'models';
+import { toast } from 'react-toastify';
 import { call, debounce, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import { selectStudentsFilter, studentsActions } from './studentsSlice';
 
@@ -21,6 +22,7 @@ function* handleSearchDebounce(action: PayloadAction<ListParams>) {
 function* deleteStudent(action: PayloadAction<Student['id']>) {
   try {
     yield call(studentApi.delete, action.payload as string);
+    toast.success('Delete student successfully!');
 
     const filter: ReturnType<typeof selectStudentsFilter> = yield select(selectStudentsFilter);
     yield put(studentsActions.setFilter({ ...filter }));

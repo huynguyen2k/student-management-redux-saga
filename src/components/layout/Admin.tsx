@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Header, Sidebar } from 'components/common';
+import { Header, Sidebar } from 'components/Common';
 import { cityActions } from 'features/city/citySlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
